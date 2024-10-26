@@ -1,0 +1,67 @@
+seed: 2024
+resume: true
+device: 0
+use_amp: true
+num_folds: 5
+folds: [0, 1, 2, 3, 4]
+epochs: 25
+model:
+  name: RSNA2024AttentionNetV8
+  timm_model:
+    model_name: tf_efficientnetv2_s.in21k_ft_in1k
+    pretrained: true
+    features_only: false
+    in_chans: 1
+    drop_rate: 0.3
+    drop_path_rate: 0.2
+  loss:
+    name: RSNA2024Loss
+    ce_loss:
+      name: CrossEntropyLoss
+      weight: [1.0, 2.0, 4.0]
+    condition_weight: [1.0, 0.25, 0.25, 0.25, 0.25]
+    levels: [any]
+    overall_loss_weight: 1.0
+    level_loss_weight: 0.1
+    slice_loss_weight: 0.0
+  num_classes: 3
+  use_planes: [sagittal_t1, sagittal_t2, axial_t2]
+optimizer:
+  name: AdamW
+  lr: 0.00005
+  weight_decay: 0.01
+  betas:
+    - 0.9
+    - 0.999
+scheduler:
+  name: OneCycleLR
+  max_lr: ${optimizer.lr}
+  pct_start: 0.3
+dataset:
+  name: RSNA2024DatasetVer2Pseudo
+  image_root: moyashii/classification_datasets/v11
+  label_csv_path: train_fold_pseudo_v3.csv
+  image_csv_path: moyashii/classification_datasets/v11/train_images.csv
+  coord_csv_path: rsna-2024-lumbar-spine-degenerative-classification/train_label_coordinates.csv
+  image_shapes:
+    "Sagittal T1": [224, 224, 15]
+    "Sagittal T2/STIR": [224, 224, 15]
+    "Axial T2": [224, 224, 10]
+  target_levels: [L1/L2, L2/L3, L3/L4, L4/L5, L5/S1]
+transform:
+  "Sagittal T1":
+    image_size: [224, 224]
+  "Sagittal T2/STIR":
+    image_size: [224, 224]
+  "Axial T2":
+    image_size: [224, 224]
+dataloader:
+  batch_size: 8
+  num_workers: 8
+mixup:
+  mix_beta: 1.0
+  p: 0.5
+metrics:
+  train_csv_path: rsna-2024-lumbar-spine-degenerative-classification/train.csv
+submit:
+  base_submit_csv: null

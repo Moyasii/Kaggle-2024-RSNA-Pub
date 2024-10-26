@@ -1,0 +1,7 @@
+{
+    "RAW_DATA_DIR": "./input/",
+    "TRAIN_DATA_CLEAN_DIR": "./input/processed/",
+    "MODEL_CHECKPOINT_DIR": "./output/",
+    "PRETRAINED_CHECKPOINT_DIR": "./weight/",
+    "SUBMISSION_DIR": "./submissions/"
+}

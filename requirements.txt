@@ -1,0 +1,17 @@
+matplotlib==3.9.0
+seaborn==0.13.2
+jupyter==1.0.0
+pandas==2.2.1
+tqdm==4.66.5
+numpy==1.26.4
+scikit-learn==1.2.2
+scipy==1.11.4
+--find-links https://download.pytorch.org/whl/cu121
+torch==2.1.2
+torchvision==0.16.2
+timm==0.9.16
+albumentations==1.4.0
+pydicom==2.4.4
+onnx==1.16.1
+omegaconf==2.3.0
+kaggle==1.6.17

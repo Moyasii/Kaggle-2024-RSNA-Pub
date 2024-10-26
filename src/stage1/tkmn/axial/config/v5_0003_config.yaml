@@ -1,0 +1,43 @@
+seed: 42
+device: 0
+use_amp: true
+num_folds: 5
+folds: [0, 1, 2, 3, 4]
+epochs: 60
+model:
+  timm_model:
+    model_name: tf_efficientnet_b4.in1k
+    out_indices: [1, 2, 3, 4]
+    in_chans: 1
+    pretrained: true
+    features_only: true
+    drop_rate: 0.3
+    drop_path_rate: 0.2
+  loss:
+    name: BFWithLogitsLoss
+  num_classes: 1
+optimizer:
+  name: AdamW
+  lr: 0.0002
+  weight_decay: 0.01
+  betas:
+    - 0.9
+    - 0.999
+scheduler:
+  name: OneCycleLR
+  max_lr: ${optimizer.lr}
+  pct_start: 0.3
+dataset:
+  image_root: tkmn/keypoint_datasets/v5
+  label_csv_path: tkmn/keypoint_datasets/v5/train_10folds.csv
+  heatmap_size: [152, 152]
+  stride: 4
+transform:
+  image_size: [380, 380]
+dataloader:
+  batch_size: 32
+  num_workers: 8
+metrics:
+  stride: ${dataset.stride}
+  percentile: 99.8
+  score_name: acc(per)@0.02

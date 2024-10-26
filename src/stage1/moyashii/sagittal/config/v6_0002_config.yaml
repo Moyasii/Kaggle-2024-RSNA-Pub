@@ -1,0 +1,56 @@
+seed: 2024
+device: 0
+use_amp: true
+num_folds: 5
+folds: [0, 1, 2, 3, 4]
+epochs: 60
+model:
+  timm_model:
+    model_name: tf_efficientnet_b6.ns_jft_in1k
+    out_indices: [0, 1, 2, 3, 4]
+    in_chans: 1
+    pretrained: true
+    features_only: true
+    drop_rate: 0.3
+    drop_path_rate: 0.2
+  loss:
+    name: BFWithLogitsLoss
+    # name: CenterNetFocalLoss
+optimizer:
+  name: AdamW
+  lr: 0.0002
+  weight_decay: 0.01
+  betas:
+    - 0.9
+    - 0.999
+scheduler:
+  name: OneCycleLR
+  max_lr: ${optimizer.lr}
+  pct_start: 0.3
+dataset:
+  name: RSNA2024KeypointDatasetTrainV2
+  image_root: moyashii/keypoint_datasets/v6
+  label_csv_path: moyashii/keypoint_datasets/v6/train_all_5folds.csv
+  heatmap_size: [152, 152]
+  num_slices: 1
+  use_center: true
+  stride: 2
+transform:
+  image_size: [380, 380]
+  include_gaussian_blur: false
+  include_gauss_noise: false
+  shift_scale_rotate_params:
+    shift_limit: 0.15
+    scale_limit: 0.15
+    rotate_limit: 15
+    border_mode: 0
+    p: 0.5
+  coarse_dropout_params:
+    p: 0.0
+dataloader:
+  batch_size: 32
+  num_workers: 8
+metrics:
+  stride: ${dataset.stride}
+  percentile: 99.8
+  score_name: acc(per)@0.02
