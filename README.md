@@ -74,7 +74,7 @@ You can quickly run predictions on test data using pretrained models by executin
 scripts/run_quick.sh
 ```
 
-This script utilizes the pretrained models provided in this repository to produce results in the shortest time.
+This script automatically downloads the pretrained models from the [Kaggle Dataset](https://www.kaggle.com/datasets/akinosora/rsna2024-lsdc-3rd-models-pub) during execution, producing results in the shortest time.
 
 ### Full Training and Prediction Workflow
 
